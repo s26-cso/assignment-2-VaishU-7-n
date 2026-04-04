@@ -1,5 +1,5 @@
 .section .rodata
-fmt:   
+fmt:
 .string "%d "
 fmt2:
 .string "%d\n"
@@ -43,7 +43,7 @@ nge:
     li t0, 0
 
 initialize:
-    bge t0, s0, loop
+    bgt t0, s0, loop
     la t1, ans
     slli t2, t0, 2
     add t1, t1, t2
