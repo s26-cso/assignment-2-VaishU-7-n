@@ -61,7 +61,7 @@ loop:
      blt s2,zero,done
 
 while:
-    blt s3,zero,push        #if stack.top()==0 push element into stack
+    blt s3, zero, assign       #if stack.top()==0 push element into stack
     la t0,stack             #t0 stores address of stack arr
     slli t1,s3,2            #offset calc t1 = stack.top()*4
     add t0,t0,t1            #adress calc t0 = base add + offset
@@ -77,7 +77,7 @@ while:
     la t6, arr
     slli t1, t2, 2
     add t6, t6, t1
-    lw t0, 0(t6)        #t7 contains arr[stack.top()]
+    lw t6, 0(t6)       #t7 contains arr[stack.top()]
 
    ble t0, t5, pop
    j assign
@@ -93,6 +93,7 @@ assign:
     la t0, stack
     slli t1, s3, 2
     add t0, t0, t1
+    blt s3, zero, no_elem
     lw t2, 0(t0)
 
     la t3, ans
