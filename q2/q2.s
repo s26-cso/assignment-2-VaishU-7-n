@@ -1,6 +1,8 @@
 .section .rodata
 fmt:   
 .string "%d "
+fmt2:
+.string "%d\n"
 
 .section .bss
 arr:    .space 800
@@ -21,29 +23,23 @@ main:
     li s2, 0         # i
 
 convert_loop:
-
     bge s2,s0,nge
-
     addi t0, s2, 1      #(in offset t0 should be 1 greater than s2 to match arg list and arr indexing)
     slli t0, t0, 3      #t0 = 8 (offset calc)
     add t1, s1, t0      # t1 = s1(base)+t0(offset) so t1 is = a[i] memory
-    ld t2, 0(t1)        #t2 is a[i]
-
-    mv a0, t2
+    ld a0, 0(t1)        
     call atoi           #calling atoi to convert string to int as cli are strings
 
     la t3, arr          #t3 contains base value of arr 
     slli t4, s2, 2      #offset calc t4 = s2*4
     add t3, t3, t4
     sw a0, 0(t3)        #storing converted integer value
-
     addi s2, s2, 1      #i++
     j convert_loop
 
 nge:
-    mv s0,s2     #i=n
-    addi s2,s2,-1
-    li s3,-1    #top of stack = -1
+    addi s2,s0,-1       # i = n - 1 (Right to Left)
+    li s3,-1            #top of stack = -1
 
     li t0,0             #i
 
@@ -79,12 +75,10 @@ while:
     add t6, t6, t1
     lw t6, 0(t6)       #t7 contains arr[stack.top()]
 
-   ble t0, t5, pop
-   j assign
-
-pop:
-    addi s3, s3, -1
+    blt t5, t6, assign      # If current < stack top, we found NGE
+    addi s3, s3, -1         # pop
     j while
+
 
 assign:
      la t3, ans
@@ -118,17 +112,29 @@ push:
 
 done:
     li s2, 0
+    addi s0,s0,-1
 print:
-    bge s2, s0, end
+    bge s2, s0, print_last
     la t0, ans
     slli t1, s2, 2
     add t0, t0, t1
-    lw t2, 0(t0)
+    lw a1, 0(t0)
     la a0, fmt
-    mv a1, t2
     call printf
     addi s2, s2, 1
     j print
+
+print_last:
+
+    la t0, ans
+    slli t1, s2, 2
+    add t0, t0, t1
+    lw a1, 0(t0)
+    la a0, fmt2
+    call printf
+    
+
+
 
 end:
     ld ra, 24(sp)
