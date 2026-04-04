@@ -7,7 +7,7 @@ fmt2:
 .section .bss
 arr:    .space 800
 ans:    .space 800
-stack:  .space 800     # stack of indices
+stack:  .space 800
 
 .section .text
 .globl main
@@ -16,18 +16,18 @@ main:
     addi sp, sp, -32
     sd ra, 24(sp)
 
-    mv s0, a0        # argc
-    mv s1, a1        # argv
+    mv s0, a0
+    mv s1, a1
 
-    addi s0, s0, -1  # n
-    li s2, 0         # i
+    addi s0, s0, -1
+    li s2, 0
 
 convert_loop:
-    bge s2,s0,nge
+    bge s2, s0, nge
     addi t0, s2, 1
     slli t0, t0, 3
     add t1, s1, t0
-    ld a0, 0(t1)        
+    ld a0, 0(t1)
     call atoi
 
     la t3, arr
@@ -38,45 +38,43 @@ convert_loop:
     j convert_loop
 
 nge:
-    addi s2,s0,-1       # i = n - 1 (Right to Left)
-    li s3,-1            # top of stack = -1
-
-    li t0,0             # i
+    addi s2, s0, -1
+    li s3, -1
+    li t0, 0
 
 initialize:
-    bge t0,s0,loop
-    la t1,ans
-    slli t2,t0,2
-    add t1,t1,t2
-    li t3, -1               
-    sw t3,0(t1)
-    addi t0,t0,1
+    bge t0, s0, loop
+    la t1, ans
+    slli t2, t0, 2
+    add t1, t1, t2
+    li t3, -1
+    sw t3, 0(t1)
+    addi t0, t0, 1
     j initialize
 
 loop:
-     blt s2,zero,done
+    blt s2, zero, done
 
 while:
     blt s3, zero, assign
-    la t0,stack
-    slli t1,s3,2
-    add t0,t0,t1
-    lw t2,0(t0)             # t2 = stack.top()
+    la t0, stack
+    slli t1, s3, 2
+    add t0, t0, t1
+    lw t2, 0(t0)
 
-    la t3,arr
+    la t3, arr
     slli t4, s2, 2
     add t3, t3, t4
-    lw t5, 0(t3)            # t5 = arr[i]
+    lw t5, 0(t3)
 
     la t6, arr
     slli t1, t2, 2
     add t6, t6, t1
-    lw t6, 0(t6)            # t6 = arr[stack.top()]
+    lw t6, 0(t6)
 
-    blt t5, t6, assign      # arr[stack.top()] > arr[i], stop popping
-    addi s3, s3, -1         # pop
+    blt t5, t6, assign
+    addi s3, s3, -1
     j while
-
 
 assign:
     la t3, ans
@@ -94,20 +92,19 @@ assign:
 no_elem:
     li t2, -1
     sw t2, 0(t3)
-    
+
 push:
     addi s3, s3, 1
     la t0, stack
     slli t1, s3, 2
     add t0, t0, t1
     sw s2, 0(t0)
-
     addi s2, s2, -1
     j loop
 
-
 done:
     li s2, 0
+
 print:
     bge s2, s0, print_last
     la t0, ans
@@ -132,3 +129,4 @@ end:
     addi sp, sp, 32
     li a0, 0
     ret
+    
