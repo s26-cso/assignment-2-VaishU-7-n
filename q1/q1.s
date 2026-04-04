@@ -2,7 +2,7 @@
 .global make_node
 .globl insert
 .globl get
-.globl getAtmost
+.globl getAtMost
 .section .text
 
 
@@ -131,7 +131,7 @@ return_node1:
     addi sp,sp,24
     ret
 
-getAtmost:
+getAtMost:
 
 addi sp,sp,-24
 sd ra,16(sp)
