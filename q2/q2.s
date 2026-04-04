@@ -82,26 +82,29 @@ while:
    ble t0, t5, pop
    j assign
 
-   pop:
+pop:
     addi s3, s3, -1
     j while
 
 assign:
-    blt s3, zero, skip_assign
+     la t3, ans
+    slli t4, s2, 2
+    add t3, t3, t4
+    blt s3, zero, no_elem
 
     # result[i] = stack[top]
     la t0, stack
     slli t1, s3, 2
     add t0, t0, t1
-    blt s3, zero, no_elem
     lw t2, 0(t0)
-
-    la t3, ans
-    slli t4, s2, 2
-    add t3, t3, t4
     sw t2, 0(t3)
+    j push
 
-skip_assign:
+no_elem:
+    li t2, -1
+    sw t2, 0(t3)
+    
+  
 push:
     addi s3, s3, 1      #incrementing tos
     la t0, stack
@@ -109,26 +112,26 @@ push:
     add t0, t0, t1
     sw s2, 0(t0)        #storing i on top of stack
 
-addi s2, s2, -1
-j loop
+    addi s2, s2, -1
+    j loop
 
 
 done:
-li s2, 0
+    li s2, 0
 print:
-bge s2, s0, end
-la t0, ans
-slli t1, s2, 2
-add t0, t0, t1
-lw t2, 0(t0)
-la a0, fmt
-mv a1, t2
-call printf
-addi s2, s2, 1
-j print
+    bge s2, s0, end
+    la t0, ans
+    slli t1, s2, 2
+    add t0, t0, t1
+    lw t2, 0(t0)
+    la a0, fmt
+    mv a1, t2
+    call printf
+    addi s2, s2, 1
+    j print
 
 end:
-ld ra, 24(sp)
-addi sp, sp, 32
-li a0, 0
-ret
+    ld ra, 24(sp)
+    addi sp, sp, 32
+    li a0, 0
+    ret
