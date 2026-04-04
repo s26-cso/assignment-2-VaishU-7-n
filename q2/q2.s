@@ -20,6 +20,7 @@ main:
     mv s1, a1        # argv
 
     addi s0, s0, -1  # n(here length of arr = argc(total args)-1 as first arg is file name)
+    blez s0, done_print 
     li s2, 0         # i
 
 convert_loop:
@@ -57,6 +58,7 @@ loop:
      blt s2,zero,done
 
 while:
+
     blt s3, zero, assign       #if stack.top()==0 push element into stack
     la t0,stack             #t0 stores address of stack arr
     slli t1,s3,2            #offset calc t1 = stack.top()*4
