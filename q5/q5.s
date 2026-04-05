@@ -1,8 +1,8 @@
 .section .data
 filename: .string "input.txt"
 mode:     .string "r"
-fmt:      .string "%d"
 fmt2: .string "%s"
+
 buffer :
 .space 10004
 yes:
@@ -13,16 +13,15 @@ no:
 .section .text
 .globl main
 
-
 main:
     addi sp, sp, -32
     sd ra, 24(sp)
 
     # fopen(filename, "r")
-    la a0, filename
-    la a1, mode
+    la a0, filename    #first argument
+    la a1, mode        #second argument
     call fopen
-    mv s0, a0         # FILE* stored in s0
+    mv s0, a0          # file pointer stored in s0
 
     beqz s0, finish
 
