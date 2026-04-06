@@ -35,11 +35,11 @@ main:
     call fclose
     li t1,0 #index offset
 move_end:
-add t2,t1,t0
-lb t3,0(t2)
-beq t3,x0,end
-addi t1,t1,1
-j move_end
+    add t2,t1,t0
+    lb t3,0(t2)
+    beq t3,x0,end
+    addi t1,t1,1
+    j move_end
 
 end:
 addi t1,t1,-1 #stores index of right most char
