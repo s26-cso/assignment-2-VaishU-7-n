@@ -28,38 +28,59 @@ main:
     mv a0, s0
     la a1, fmt2
     la a2, buffer
-    call fscanf
-    la t0,buffer
+    
+    mv a0,s0
+    li a1,0     #zero to move forward
+    li a2,2     #to move to end of file
+    call fseek
+
+    mv a0,s0
+    call ftell
+    mv s1,a0        #move to end of file to get size
+
+    addi t1,s1,-1
 
     mv a0, s0
-    call fclose
-    li t1,0 #index offset
-move_end:
-    add t2,t1,t0
-    lb t3,0(t2)
-    beq t3,x0,end
-    addi t1,t1,1
-    j move_end
+    mv a1,t1
+    li a2,0
+    call fseek
 
-end:
-addi t1,t1,-1 #stores index of right most char
-li t2,0 #stores index of leftmost char
+    mv a0,s0
+    call fgetc
+    li t4, 10
+    bne a0, t4, skip_nl
+
+    addi t1, t1, -1
+
+skip_nl:
+    li t2, 0
 
 check:
 
-add t5,t0,t1
-add t6,t0,t2
-lb t3,0(t6)
-lb t4,0(t5)
+    bge t2, t1, end1
+    mv a0, s0
+    mv a1, t2
+    li a2, 0
+    call fseek
 
-bge t2,t1,end1
+    mv a0, s0
+    call fgetc
+    mv t3, a0 
 
-bne t3,t4,finish
+    mv a0, s0
+    mv a1, t1
+    li a2, 0
+    call fseek
 
-addi t2,t2,1
-addi t1,t1,-1
+    mv a0, s0
+    call fgetc
+    mv t4, a0 
 
-j check
+    bne t3, t4, finish
+
+    addi t2, t2, 1
+    addi t1, t1, -1
+    j check
 
 end1:
 
